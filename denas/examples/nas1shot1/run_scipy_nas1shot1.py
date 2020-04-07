@@ -86,7 +86,7 @@ parser.add_argument('--max_budget', default=108, type=str, nargs='?',
                     help='maximum wallclock time to run DE for')
 parser.add_argument('--verbose', default='True', choices=['True', 'False'], nargs='?', type=str,
                     help='to print progress or not')
-parser.add_argument('--folder', default='scipy', type=str, nargs='?',
+parser.add_argument('--folder', default='scipy_default', type=str, nargs='?',
                     help='name of folder where files will be dumped')
 
 args = parser.parse_args()
@@ -126,9 +126,10 @@ for space in spaces:
         if not args.fix_seed:
             np.random.seed(0)
         # Running DE iterations
-        _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-               recombination=args.crossover_prob, init='random', updating='deferred',
-               strategy='rand1bin', polish=False, disp=args.verbose)
+        # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+        #        recombination=args.crossover_prob, init='random', updating='deferred',
+        #        strategy='rand1bin', polish=False, disp=args.verbose)
+        _ = DE(f, bounds)
         fh = open(os.path.join(output_path,
                                'DE_{}_ssp_{}_seed_0.obj'.format(args.run_id, space)), 'wb')
         pickle.dump(search_space.run_history, fh)
@@ -140,9 +141,10 @@ for space in spaces:
             if args.verbose:
                 print("\nRun #{:<3}\n{}".format(run_id + 1, '-' * 8))
             # Running DE iterations
-            _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-                   recombination=args.crossover_prob, init='random', updating='deferred',
-                   strategy='rand1bin', polish=False, disp=args.verbose)
+            # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+            #        recombination=args.crossover_prob, init='random', updating='deferred',
+            #        strategy='rand1bin', polish=False, disp=args.verbose)
+            _ = DE(f, bounds)
             fh = open(os.path.join(output_path,
                                    'DE_{}_ssp_{}_seed_{}.obj'.format(run_id, space, run_id)), 'wb')
             pickle.dump(search_space.run_history, fh)
