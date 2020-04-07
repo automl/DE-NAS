@@ -151,7 +151,7 @@ if args.runs is None:  # for a single run
     # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
     #          recombination=args.crossover_prob, init='random', updating='deferred',
     #          strategy='rand1bin', polish=False, disp=args.verbose)
-     _ = DE(f, bounds)
+    res = DE(f, bounds)
     if 'cifar' in args.benchmark:
         res = b.get_results(ignore_invalid_configs=True)
     else:
@@ -169,7 +169,7 @@ else:  # for multiple runs
         # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
         #          recombination=args.crossover_prob, init='random', updating='deferred',
         #          strategy='rand1bin', polish=False, disp=args.verbose)
-        _ = DE(f, bounds)
+        res = DE(f, bounds)
         if 'cifar' in args.benchmark:
             res = b.get_results(ignore_invalid_configs=True)
         else:

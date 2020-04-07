@@ -6,9 +6,6 @@ import sys
 sys.path.append(os.path.join(os.getcwd(), '../nasbench/'))
 sys.path.append(os.path.join(os.getcwd(), '../nasbench-1shot1/'))
 
-sys.path.append(os.path.join(os.getcwd(), '../nas_benchmarks_development/'))
-sys.path.append(os.path.join(os.getcwd(), '../NAS101/nasbench/'))
-
 import json
 import pickle
 import argparse
@@ -129,7 +126,7 @@ for space in spaces:
         # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
         #        recombination=args.crossover_prob, init='random', updating='deferred',
         #        strategy='rand1bin', polish=False, disp=args.verbose)
-        _ = DE(f, bounds)
+        res = DE(f, bounds)
         fh = open(os.path.join(output_path,
                                'DE_{}_ssp_{}_seed_0.obj'.format(args.run_id, space)), 'wb')
         pickle.dump(search_space.run_history, fh)
@@ -144,7 +141,7 @@ for space in spaces:
             # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
             #        recombination=args.crossover_prob, init='random', updating='deferred',
             #        strategy='rand1bin', polish=False, disp=args.verbose)
-            _ = DE(f, bounds)
+            res = DE(f, bounds)
             fh = open(os.path.join(output_path,
                                    'DE_{}_ssp_{}_seed_{}.obj'.format(run_id, space, run_id)), 'wb')
             pickle.dump(search_space.run_history, fh)
