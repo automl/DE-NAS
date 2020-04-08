@@ -49,31 +49,31 @@ def vector_to_configspace(cs, vector):
     return new_config
 
 
-    def boundary_check(vector, fix_type='random'):
-        '''
-        Checks whether each of the dimensions of the input vector are within [0, 1].
-        If not, values of those dimensions are replaced with the type of fix selected.
+def boundary_check(vector, fix_type='random'):
+    '''
+    Checks whether each of the dimensions of the input vector are within [0, 1].
+    If not, values of those dimensions are replaced with the type of fix selected.
 
-        Parameters
-        ----------
-        vector : array
-            The vector describing the individual from the population
-        fix_type : str, {'random', 'clip'}
-            if 'random', the values are replaced with a random sampling from [0,1)
-            if 'clip', the values are clipped to the closest limit from {0, 1}
+    Parameters
+    ----------
+    vector : array
+        The vector describing the individual from the population
+    fix_type : str, {'random', 'clip'}
+        if 'random', the values are replaced with a random sampling from [0,1)
+        if 'clip', the values are clipped to the closest limit from {0, 1}
 
-        Returns
-        -------
-        array
-        '''
-        violations = np.where((vector > 1) | (vector < 0))[0]
-        if len(violations) == 0:
-            return vector
-        if fix_type == 'random':
-            vector[violations] = np.random.uniform(low=0.0, high=1.0, size=len(violations))
-        else:
-            vector[violations] = np.clip(vector[violations], a_min=0, a_max=1)
+    Returns
+    -------
+    array
+    '''
+    violations = np.where((vector > 1) | (vector < 0))[0]
+    if len(violations) == 0:
         return vector
+    if fix_type == 'random':
+        vector[violations] = np.random.uniform(low=0.0, high=1.0, size=len(violations))
+    else:
+        vector[violations] = np.clip(vector[violations], a_min=0, a_max=1)
+    return vector
 
 
 def generate_bounds(dimensions):
