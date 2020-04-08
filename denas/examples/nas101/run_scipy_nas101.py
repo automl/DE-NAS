@@ -122,6 +122,8 @@ parser.add_argument('--folder', default=None, type=str, nargs='?',
 args = parser.parse_args()
 args.verbose = True if args.verbose == 'True' else False
 args.fix_seed = True if args.fix_seed == 'True' else False
+if args.folder is None:
+    args.folder = "scipy" if args.scipy_type == 'custom' else "scipy_default"
 
 if args.benchmark == "nas_cifar10a": # NAS-Bench-101
     max_budget = 108
