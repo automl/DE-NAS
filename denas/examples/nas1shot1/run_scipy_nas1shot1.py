@@ -44,6 +44,33 @@ def vector_to_configspace(cs, vector):
     return new_config
 
 
+    def boundary_check(vector, fix_type='random'):
+        '''
+        Checks whether each of the dimensions of the input vector are within [0, 1].
+        If not, values of those dimensions are replaced with the type of fix selected.
+
+        Parameters
+        ----------
+        vector : array
+            The vector describing the individual from the population
+        fix_type : str, {'random', 'clip'}
+            if 'random', the values are replaced with a random sampling from [0,1)
+            if 'clip', the values are clipped to the closest limit from {0, 1}
+
+        Returns
+        -------
+        array
+        '''
+        violations = np.where((vector > 1) | (vector < 0))[0]
+        if len(violations) == 0:
+            return vector
+        if fix_type == 'random':
+            vector[violations] = np.random.uniform(low=0.0, high=1.0, size=len(violations))
+        else:
+            vector[violations] = np.clip(vector[violations], a_min=0, a_max=1)
+        return vector
+
+
 def generate_bounds(dimensions):
     bounds = [[(0, 1)] * dimensions][0]
     return bounds
@@ -83,7 +110,7 @@ parser.add_argument('--max_budget', default=108, type=str, nargs='?',
                     help='maximum wallclock time to run DE for')
 parser.add_argument('--verbose', default='True', choices=['True', 'False'], nargs='?', type=str,
                     help='to print progress or not')
-parser.add_argument('--folder', default='scipy_default', type=str, nargs='?',
+parser.add_argument('--folder', default='scipy', type=str, nargs='?',
                     help='name of folder where files will be dumped')
 
 args = parser.parse_args()
@@ -112,6 +139,7 @@ for space in spaces:
     # Objective function for DE
     def f(config):
         global cs, search_space
+        config = boundary_check(config)
         config = vector_to_configspace(cs, config)
         fitness, _ = search_space.objective_function(nasbench, config)
         return fitness
@@ -123,10 +151,10 @@ for space in spaces:
         if not args.fix_seed:
             np.random.seed(0)
         # Running DE iterations
-        # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-        #        recombination=args.crossover_prob, init='random', updating='deferred',
-        #        strategy='rand1bin', polish=False, disp=args.verbose)
-        res = DE(f, bounds)
+        _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+               recombination=args.crossover_prob, init='random', updating='deferred',
+               strategy='rand1bin', polish=False, disp=args.verbose)
+        # res = DE(f, bounds)
         fh = open(os.path.join(output_path,
                                'DE_{}_ssp_{}_seed_0.obj'.format(args.run_id, space)), 'wb')
         pickle.dump(search_space.run_history, fh)
@@ -138,10 +166,10 @@ for space in spaces:
             if args.verbose:
                 print("\nRun #{:<3}\n{}".format(run_id + 1, '-' * 8))
             # Running DE iterations
-            # _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-            #        recombination=args.crossover_prob, init='random', updating='deferred',
-            #        strategy='rand1bin', polish=False, disp=args.verbose)
-            res = DE(f, bounds)
+            _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+                   recombination=args.crossover_prob, init='random', updating='deferred',
+                   strategy='rand1bin', polish=False, disp=args.verbose)
+            # res = DE(f, bounds)
             fh = open(os.path.join(output_path,
                                    'DE_{}_ssp_{}_seed_{}.obj'.format(run_id, space, run_id)), 'wb')
             pickle.dump(search_space.run_history, fh)
