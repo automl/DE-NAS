@@ -110,12 +110,16 @@ parser.add_argument('--max_budget', default=108, type=str, nargs='?',
                     help='maximum wallclock time to run DE for')
 parser.add_argument('--verbose', default='True', choices=['True', 'False'], nargs='?', type=str,
                     help='to print progress or not')
-parser.add_argument('--folder', default='scipy', type=str, nargs='?',
+parser.add_argument('--scipy_type', default='default', type=str, nargs='?',
+                    help='version of Scipy-DE to run', choices=['default', 'custom'])
+parser.add_argument('--folder', default=None, type=str, nargs='?',
                     help='name of folder where files will be dumped')
 
 args = parser.parse_args()
 args.verbose = True if args.verbose == 'True' else False
 args.fix_seed = True if args.fix_seed == 'True' else False
+if args.folder is None:
+    args.folder = "scipy" if args.scipy_type == 'custom' else "scipy_default"
 
 nasbench = api.NASBench(args.data_dir)
 
@@ -151,10 +155,12 @@ for space in spaces:
         if not args.fix_seed:
             np.random.seed(0)
         # Running DE iterations
-        _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-               recombination=args.crossover_prob, init='random', updating='deferred',
-               strategy='rand1bin', polish=False, disp=args.verbose)
-        # res = DE(f, bounds)
+        if args.scipy_type == 'custom':
+            _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+                   recombination=args.crossover_prob, init='random', updating='deferred',
+                   strategy='rand1bin', polish=False, disp=args.verbose, maxiter=100)
+        else:
+            res = DE(f, bounds, disp=args.verbose, maxiter=100)
         fh = open(os.path.join(output_path,
                                'DE_{}_ssp_{}_seed_0.obj'.format(args.run_id, space)), 'wb')
         pickle.dump(search_space.run_history, fh)
@@ -166,10 +172,12 @@ for space in spaces:
             if args.verbose:
                 print("\nRun #{:<3}\n{}".format(run_id + 1, '-' * 8))
             # Running DE iterations
-            _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-                   recombination=args.crossover_prob, init='random', updating='deferred',
-                   strategy='rand1bin', polish=False, disp=args.verbose)
-            # res = DE(f, bounds)
+            if args.scipy_type == 'custom':
+                _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+                       recombination=args.crossover_prob, init='random', updating='deferred',
+                       strategy='rand1bin', polish=False, disp=args.verbose, maxiter=100)
+            else:
+                res = DE(f, bounds, disp=args.verbose, maxiter=100)
             fh = open(os.path.join(output_path,
                                    'DE_{}_ssp_{}_seed_{}.obj'.format(run_id, space, run_id)), 'wb')
             pickle.dump(search_space.run_history, fh)

@@ -114,7 +114,9 @@ parser.add_argument('--crossover_prob', default=0.5, type=float, nargs='?',
                     help='probability of crossover')
 parser.add_argument('--verbose', default='False', choices=['True', 'False'], nargs='?', type=str,
                     help='to print progress or not')
-parser.add_argument('--folder', default='scipy_default', type=str, nargs='?',
+parser.add_argument('--scipy_type', default='default', type=str, nargs='?',
+                    help='version of Scipy-DE to run', choices=['default', 'custom'])
+parser.add_argument('--folder', default=None, type=str, nargs='?',
                     help='name of folder where files will be dumped')
 
 args = parser.parse_args()
@@ -176,10 +178,12 @@ if args.runs is None:  # for a single run
     if not args.fix_seed:
         np.random.seed(0)
     # Running DE iterations
-    _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-             recombination=args.crossover_prob, init='random', updating='deferred',
-             strategy='rand1bin', polish=False, disp=args.verbose)
-    # res = DE(f, bounds)
+    if args.scipy_type == 'custom':
+        _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+               recombination=args.crossover_prob, init='random', updating='deferred',
+               strategy='rand1bin', polish=False, disp=args.verbose, maxiter=100)
+    else:
+        res = DE(f, bounds, disp=args.verbose, maxiter=100)
     if 'cifar' in args.benchmark:
         res = b.get_results(ignore_invalid_configs=True)
     else:
@@ -194,10 +198,12 @@ else:  # for multiple runs
         if args.verbose:
             print("\nRun #{:<3}\n{}".format(run_id + 1, '-' * 8))
         # Running DE iterations
-        _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
-                 recombination=args.crossover_prob, init='random', updating='deferred',
-                 strategy='rand1bin', polish=False, disp=args.verbose)
-        # res = DE(f, bounds)
+        if args.scipy_type == 'custom':
+            _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+                   recombination=args.crossover_prob, init='random', updating='deferred',
+                   strategy='rand1bin', polish=False, disp=args.verbose, maxiter=100)
+        else:
+            res = DE(f, bounds, disp=args.verbose, maxiter=100)
         if 'cifar' in args.benchmark:
             res = b.get_results(ignore_invalid_configs=True)
         else:
