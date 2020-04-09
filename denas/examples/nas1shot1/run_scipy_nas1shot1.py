@@ -155,12 +155,14 @@ for space in spaces:
         if not args.fix_seed:
             np.random.seed(0)
         # Running DE iterations
+        init_pop = np.random.uniform(size=(args.pop_size, dimensions))
         if args.scipy_type == 'custom':
-            _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+            _ = DE(f, bounds, popsize=init_pop, mutation=args.mutation_factor,
                    recombination=args.crossover_prob, init='random', updating='deferred',
-                   strategy='rand1bin', polish=False, disp=args.verbose, maxiter=100)
+                   strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens,
+                   seed=0)
         else:
-            res = DE(f, bounds, disp=args.verbose, maxiter=100)
+            res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens, seed=0)
         fh = open(os.path.join(output_path,
                                'DE_{}_ssp_{}_seed_0.obj'.format(args.run_id, space)), 'wb')
         pickle.dump(search_space.run_history, fh)
@@ -172,12 +174,15 @@ for space in spaces:
             if args.verbose:
                 print("\nRun #{:<3}\n{}".format(run_id + 1, '-' * 8))
             # Running DE iterations
+            init_pop = np.random.uniform(size=(args.pop_size, dimensions))
             if args.scipy_type == 'custom':
-                _ = DE(f, bounds, popsize=args.pop_size, mutation=args.mutation_factor,
+                _ = DE(f, bounds, popsize=init_pop, mutation=args.mutation_factor,
                        recombination=args.crossover_prob, init='random', updating='deferred',
-                       strategy='rand1bin', polish=False, disp=args.verbose, maxiter=100)
+                       strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens,
+                       seed=run_id)
             else:
-                res = DE(f, bounds, disp=args.verbose, maxiter=100)
+                res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens,
+                         seed=run_id)
             fh = open(os.path.join(output_path,
                                    'DE_{}_ssp_{}_seed_{}.obj'.format(run_id, space, run_id)), 'wb')
             pickle.dump(search_space.run_history, fh)
