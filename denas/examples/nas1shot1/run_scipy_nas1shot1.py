@@ -160,9 +160,10 @@ for space in spaces:
             _ = DE(f, bounds, popsize=init_pop, mutation=args.mutation_factor,
                    recombination=args.crossover_prob, init='random', updating='deferred',
                    strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens,
-                   seed=0)
+                   seed=0, tol=0)
         else:
-            res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens, seed=0)
+            res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens,
+                     seed=0, tol=0)
         fh = open(os.path.join(output_path,
                                'DE_{}_ssp_{}_seed_0.obj'.format(args.run_id, space)), 'wb')
         pickle.dump(search_space.run_history, fh)
@@ -179,10 +180,10 @@ for space in spaces:
                 _ = DE(f, bounds, popsize=init_pop, mutation=args.mutation_factor,
                        recombination=args.crossover_prob, init='random', updating='deferred',
                        strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens,
-                       seed=run_id)
+                       seed=run_id, tol=0)
             else:
                 res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens,
-                         seed=run_id)
+                         seed=run_id, tol=0)
             fh = open(os.path.join(output_path,
                                    'DE_{}_ssp_{}_seed_{}.obj'.format(run_id, space, run_id)), 'wb')
             pickle.dump(search_space.run_history, fh)

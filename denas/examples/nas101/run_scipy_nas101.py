@@ -184,9 +184,10 @@ if args.runs is None:  # for a single run
     if args.scipy_type == 'custom':
         _ = DE(f, bounds, popsize=init_pop, mutation=args.mutation_factor,
                recombination=args.crossover_prob, init='random', updating='deferred',
-               strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens, seed=0)
+               strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens,
+               seed=0, tol=0)
     else:
-        res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens, seed=0)
+        res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens, seed=0, tol=0)
     if 'cifar' in args.benchmark:
         res = b.get_results(ignore_invalid_configs=True)
     else:
@@ -206,9 +207,10 @@ else:  # for multiple runs
             _ = DE(f, bounds, popsize=init_pop, mutation=args.mutation_factor,
                    recombination=args.crossover_prob, init='random', updating='deferred',
                    strategy='rand1bin', polish=False, disp=args.verbose, maxiter=args.gens,
-                   seed=run_id)
+                   seed=run_id, tol=0)
         else:
-            res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens, seed=run_id)
+            res = DE(f, bounds, popsize=init_pop, disp=args.verbose, maxiter=args.gens,
+                     seed=run_id, tol=0)
         if 'cifar' in args.benchmark:
             res = b.get_results(ignore_invalid_configs=True)
         else:
