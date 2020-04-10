@@ -208,14 +208,15 @@ y_star_valid, y_star_test = find_nas201_best(api, dataset)
 inc_config = cs.get_default_configuration().get_array().tolist()
 
 # Custom objective function for DE to interface NASBench-201
-def f(config, budget=max_budget):
-    global dataset, api, cs
+def f(config): #, budget=max_budget):
+    global dataset, api, cs, max_budget
     config = boundary_check(config)
     config = vector_to_configspace(cs, config)
     structure = config2structure(config)
     arch_index = api.query_index_by_arch(structure)
-    if budget is not None:
-        budget = int(budget)
+    # if budget is not None:
+    #     budget = int(budget)
+    budget = max_budget
     # From https://github.com/D-X-Y/AutoDL-Projects/blob/master/exps/algos/R_EA.py
     ## Author: https://github.com/D-X-Y [Xuanyi.Dong@student.uts.edu.au]
     xoinfo = api.get_more_info(arch_index, 'cifar10-valid', None, True)
@@ -242,7 +243,7 @@ def f(config, budget=max_budget):
     global history
     history.append((config, fitness, cost))
 
-    return fitness, cost
+    return fitness
 
 
 # Initializing DE bounds
