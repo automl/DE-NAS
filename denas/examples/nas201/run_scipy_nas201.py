@@ -186,6 +186,8 @@ parser.add_argument('--folder', default='de', type=str, nargs='?',
 args = parser.parse_args()
 args.verbose = True if args.verbose == 'True' else False
 args.fix_seed = True if args.fix_seed == 'True' else False
+if args.folder is None:
+    args.folder = "scipy" if args.scipy_type == 'custom' else "scipy_default"
 max_budget = args.max_budget
 dataset = args.dataset
 
