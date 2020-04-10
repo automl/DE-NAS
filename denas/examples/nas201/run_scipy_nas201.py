@@ -47,7 +47,7 @@ def config2structure_func(max_nodes):
 
 
 def calculate_regrets(history):
-    global dataset, api, de, max_budget
+    global dataset, api, de, max_budget, cs 
 
     regret_test = []
     regret_validation = []
@@ -60,7 +60,7 @@ def calculate_regrets(history):
         valid_regret = valid_score - y_star_valid
         if valid_regret <= inc:
             inc = valid_regret
-            config = vector_to_configspace(config)
+            config = vector_to_configspace(cs, config)
             structure = config2structure(config)
             arch_index = api.query_index_by_arch(structure)
             info = api.get_more_info(arch_index, dataset, max_budget, False, False)
