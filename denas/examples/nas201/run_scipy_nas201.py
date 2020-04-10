@@ -288,7 +288,6 @@ else:  # for multiple runs
         fh.close()
         print("Run saved. Resetting...")
         # essential step to not accumulate consecutive runs
-        de.reset()
         history = []
 
 save_configspace(cs, output_path)
