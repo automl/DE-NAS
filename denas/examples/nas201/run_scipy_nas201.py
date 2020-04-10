@@ -160,7 +160,7 @@ parser.add_argument('--gens', default=100, type=int, nargs='?',
 parser.add_argument('--output_path', default="./results", type=str, nargs='?',
                     help='specifies the path where the results will be saved')
 parser.add_argument('--data_dir', type=str, nargs='?',
-                    default="../nas201/NAS-Bench-201-v1_0-e61699.pth",
+                    default="../nas201/NAS-Bench-201-v1_1-096897.pth",
                     help='specifies the path to the benchmark data')
 parser.add_argument('--pop_size', default=20, type=int, nargs='?', help='population size')
 strategy_choices = ['rand1_bin', 'rand2_bin', 'rand2dir_bin', 'best1_bin', 'best2_bin',
