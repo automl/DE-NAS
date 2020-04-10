@@ -263,7 +263,7 @@ if args.runs is None:  # for a single run
                disp=args.verbose, maxiter=args.gens, seed=0, tol=-1)
     else:
         res = DE(f, bounds, disp=args.verbose, maxiter=args.gens, seed=0, tol=-1, init=init_pop)
-    res = calculate_regrets(history, runtime)
+    res = calculate_regrets(history)
     fh = open(os.path.join(output_path, 'run_{}.json'.format(args.run_id)), 'w')
     json.dump(res, fh)
     fh.close()
@@ -281,7 +281,7 @@ else:  # for multiple runs
                    disp=args.verbose, maxiter=args.gens, seed=0, tol=-1)
         else:
             res = DE(f, bounds, disp=args.verbose, maxiter=args.gens, seed=0, tol=-1, init=init_pop)
-        res = calculate_regrets(history, runtime)
+        res = calculate_regrets(history)
         fh = open(os.path.join(output_path, 'run_{}.json'.format(run_id)), 'w')
         json.dump(res, fh)
         fh.close()
