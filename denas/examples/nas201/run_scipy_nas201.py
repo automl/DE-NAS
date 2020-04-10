@@ -57,7 +57,7 @@ def calculate_regrets(history):
     validation_regret = 1
     for i in range(len(history)):
         config, valid_score, cost = history[i]
-        valid_regret = valid_regret - y_star_valid
+        valid_regret = valid_score - y_star_valid
         if valid_regret <= inc:
             inc = valid_regret
             config = de.vector_to_configspace(config)
