@@ -47,7 +47,7 @@ def config2structure_func(max_nodes):
 
 
 def calculate_regrets(history):
-    global dataset, api, de, max_budget, cs 
+    global dataset, api, de, max_budget, cs
 
     regret_test = []
     regret_validation = []
@@ -210,6 +210,7 @@ inc_config = cs.get_default_configuration().get_array().tolist()
 # Custom objective function for DE to interface NASBench-201
 def f(config): #, budget=max_budget):
     global dataset, api, cs, max_budget
+    old_config = config
     config = boundary_check(config)
     config = vector_to_configspace(cs, config)
     structure = config2structure(config)
@@ -241,7 +242,7 @@ def f(config): #, budget=max_budget):
 
     # update global tracker
     global history
-    history.append((config, fitness, cost))
+    history.append((old_config, fitness, cost))
 
     return fitness
 
