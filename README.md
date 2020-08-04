@@ -1,4 +1,9 @@
 # deNAS
+
+#### To get started with DE to optimize custom functions
+
+Refer [here](https://github.com/automl/DE-NAS/blob/master/getting_started_with_de.ipynb).
+
 #### Differential Evolution for Neural Architecture Search
 
 The instructions to setup the benchmarks can be found 
