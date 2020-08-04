@@ -1,1 +1,1 @@
-from .de import DE
+from .de import DE, AsyncDE
