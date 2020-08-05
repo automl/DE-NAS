@@ -1,8 +1,7 @@
 import numpy as np
 import ConfigSpace
 
-
-# from dask.distributed import Client
+from dask.distributed import Client
 
 
 class DEBase():
@@ -170,7 +169,7 @@ class DEBase():
 class PDE(DEBase):
     def __init__(self, cs=None, f=None, dimensions=None, pop_size=20, max_age=np.inf,
                  mutation_factor=None, crossover_prob=None, strategy='rand1_bin',
-                 budget=None, encoding=False, dim_map=None, client=None, **kwargs):
+                 budget=None, encoding=False, dim_map=None, num_workers=1, **kwargs):
         super().__init__(cs=cs, f=f, dimensions=dimensions, pop_size=pop_size, max_age=max_age,
                          mutation_factor=mutation_factor, crossover_prob=crossover_prob,
                          strategy=strategy, budget=budget, **kwargs)
@@ -182,13 +181,18 @@ class PDE(DEBase):
         self.encoding = encoding
         self.dim_map = dim_map
 
-        self.client = client
+        self.num_workers = num_workers
+        global client
+        client = Client(n_workers=num_workers, processes=True, threads_per_worker=1)
 
     def reset(self):
         super().reset()
         self.traj = []
         self.runtime = []
         self.history = []
+        global client
+        client.close()
+        client = Client(n_workers=self.num_workers, processes=True, threads_per_worker=1)
 
     def map_to_original(self, vector):
         dimensions = len(self.dim_map.keys())
@@ -445,10 +449,6 @@ class PDE(DEBase):
         return mutants
 
     def run(self, generations=1, verbose=False, budget=None, reset=True):
-        from dask.distributed import Client
-        global client
-        client = Client()
-
         # checking if a run exists
         if not hasattr(self, 'traj') or reset:
             self.reset()
@@ -465,8 +465,6 @@ class PDE(DEBase):
             self.traj.extend(traj)
             self.runtime.extend(runtime)
             self.history.extend(history)
-
-        client.close()
 
         if verbose:
             print("\nRun complete!")
