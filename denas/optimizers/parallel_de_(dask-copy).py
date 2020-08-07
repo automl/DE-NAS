@@ -1,7 +1,7 @@
 import numpy as np
 import ConfigSpace
 
-import ray
+from dask.distributed import Client
 
 
 class DEBase():
@@ -166,7 +166,6 @@ class DEBase():
         raise NotImplementedError("The function needs to be defined in the sub class.")
 
 
-
 class PDE(DEBase):
     def __init__(self, cs=None, f=None, dimensions=None, pop_size=20, max_age=np.inf,
                  mutation_factor=None, crossover_prob=None, strategy='rand1_bin',
@@ -183,25 +182,17 @@ class PDE(DEBase):
         self.dim_map = dim_map
 
         self.num_workers = num_workers
-        global ray
-        try:
-            ray.init(num_cpus=self.num_workers)
-        except Exception as e:
-            if type(e) is RuntimeError and \
-                e.args[0].split('?')[0] == "Maybe you called ray.init twice by accident":
-                print("WARNING: ray.init was called again when already active")
-                pass
-            else:
-                raise Exception(e)
+        global client
+        client = Client(n_workers=num_workers, processes=True, threads_per_worker=1)
 
     def reset(self):
         super().reset()
         self.traj = []
         self.runtime = []
         self.history = []
-        global ray
-        ray.shutdown()
-        ray.init(num_cpus=self.num_workers)
+        global client
+        client.close()
+        client = Client(n_workers=self.num_workers, processes=True, threads_per_worker=1)
 
     def map_to_original(self, vector):
         dimensions = len(self.dim_map.keys())
@@ -210,7 +201,6 @@ class PDE(DEBase):
             new_vector[i] = np.max(np.array(vector)[self.dim_map[i]])
         return new_vector
 
-    @ray.remote(num_cpus=1)
     def f_objective(self, x, budget=None):
         if self.f is None:
             raise NotImplementedError("An objective function needs to be passed.")
@@ -230,7 +220,8 @@ class PDE(DEBase):
     def init_eval_pop(self, budget=None, eval=True):
         '''Creates new population of 'pop_size' and evaluates individuals.
         '''
-        global ray
+        global client
+
         self.population = self.init_population(self.pop_size)
         self.fitness = np.array([np.inf for i in range(self.pop_size)])
         self.age = np.array([self.max_age] * self.pop_size)
@@ -242,8 +233,11 @@ class PDE(DEBase):
         if not eval:
             return traj, runtime, history
 
-        results = [self.f_objective.remote(self.population[i]) for i in range(self.pop_size)]
-        results = ray.get(results)
+        results = []
+        for i in range(self.pop_size):
+            results.append(client.submit(self.f_objective, self.population[i]))
+
+        results = client.gather(results)
 
         for i in range(self.pop_size):
             self.fitness[i], cost = results[i]
@@ -389,13 +383,17 @@ class PDE(DEBase):
     def selection(self, trials, budget=None):
         '''Carries out a parent-offspring competition given a set of trial population
         '''
-        global ray
+        global client
+
         traj = []
         runtime = []
         history = []
+        results = []
+        for i in range(len(trials)):
+            # evaluation of the newly created individuals
+            results.append(client.submit(self.f_objective, trials[i]))
 
-        results = [self.f_objective.remote(trials[i]) for i in range(len(trials))]
-        results = ray.get(results)
+        results = client.gather(results)
 
         for i in range(len(trials)):
             fitness, cost = results[i]
@@ -474,8 +472,7 @@ class PDE(DEBase):
         return np.array(self.traj), np.array(self.runtime), np.array(self.history, dtype=object)
 
 
-# class AsyncPDE(PDE):
-class AsyncPDE(DEBase):
+class AsyncPDE(PDE):
     def __init__(self, cs=None, f=None, dimensions=None, pop_size=None, max_age=np.inf,
                  mutation_factor=None, crossover_prob=None, strategy='rand1_bin',
                  budget=None, async_strategy='deferred', **kwargs):
