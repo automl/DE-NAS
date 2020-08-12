@@ -1,5 +1,9 @@
 # deNAS
 
+#### To run experiments from NAS ICLR Workshop 2020 paper
+
+Refer [here](https://github.com/automl/DE-NAS/tree/nas_workshop/denas/examples) (the parallel implementation of DE is also available here).
+
 #### To get started with DE to optimize custom functions
 
 Refer [here](https://github.com/automl/DE-NAS/blob/master/getting_started_with_de.ipynb).
