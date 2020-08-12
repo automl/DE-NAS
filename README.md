@@ -1,8 +1,13 @@
 # deNAS
+
+#### To get started with DE to optimize custom functions
+
+Refer [here](https://github.com/automl/DE-NAS/blob/master/getting_started_with_de.ipynb).
+
 #### Differential Evolution for Neural Architecture Search
 
 The instructions to setup the benchmarks can be found 
-[here](https://github.com/anonymous99199/deNAS/blob/master/denas/examples/README.md).
+[here](https://github.com/automl/DE-NAS/blob/master/denas/examples/README.md).
 
 
 To run DE on _NAS-Bench-101_ or _NAS-HPO-Bench_:

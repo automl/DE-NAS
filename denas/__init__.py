@@ -1,1 +1,1 @@
-from .optimizers import DE
+from .optimizers import DE, AsyncDE
