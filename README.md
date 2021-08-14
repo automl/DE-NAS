@@ -1,6 +1,6 @@
 # deNAS - Differential Evolution for Neural Architecture Search
 
-Implementation of DE for NAS, benchmarked in this [paper](https://arxiv.org/abs/2012.06400), 
+Implementation of DE for NAS, benchmarked in this [paper](https://arxiv.org/abs/2012.06400) ([ICLR 2020 version](https://sites.google.com/view/nas2020/accepted-papers?authuser=0)), 
 accepted to the 1st NAS Workshop at ICLR 2020.
 
 To cite the paper or code:
@@ -12,8 +12,6 @@ To cite the paper or code:
   year={2020}
 }
 ```
-
-
 
 #### To run experiments from NAS ICLR Workshop 2020 paper
 
