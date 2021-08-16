@@ -1,17 +1,25 @@
 # deNAS - Differential Evolution for Neural Architecture Search
 
-Implementation of DE for NAS, benchmarked in this [paper](https://arxiv.org/abs/2012.06400) ([ICLR 2020 version](https://sites.google.com/view/nas2020/accepted-papers?authuser=0)), 
-accepted to the 1st NAS Workshop at ICLR 2020.
+Implementation of DE for NAS, benchmarked in the paper **Differential Evolution for Neural Architecture Search** accepted to the 1st NAS Workshop at ICLR 2020.
+
+To access the paper:
+* [updated Arxiv version of the main paper](https://arxiv.org/abs/2012.06400) 
+* [ICLR 2020 version + slides + videos](https://sites.google.com/view/nas2020/accepted-papers?authuser=0)
 
 To cite the paper or code:
 ```bibtex
-@article{awad2020differential,
-  title={Differential Evolution for Neural Architecture Search},
-  author={Awad, Noor and Mallik, Neeratyoy and Hutter, Frank},
-  journal={arXiv preprint arXiv:2012.06400},
-  year={2020}
+@inproceedings{awad-iclr20,
+  author    = {N. Awad and N. Mallik and F. Hutter},
+  title     = {Differential Evolution for Neural Architecture Search},
+  booktitle = {Proceedings of the 1st workshop on neural architecture search(@{ICLR}'20)},
+  year      = {2020},
+  month     = apr
 }
 ```
+
+To contact authors for queries reqarding the paper:
+* Neeratyoy Mallik (mallik@cs.uni-freiburg.de)
+* Noor Awad (awad@cs.uni-freiburg.de)
 
 #### To run experiments from NAS ICLR Workshop 2020 paper
 
